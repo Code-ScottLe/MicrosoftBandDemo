@@ -21,6 +21,10 @@ namespace WorldHourBand.ViewModels
         /// </summary>
         private IBandClient currentBandClient;
 
+
+        private string bandInfo;
+        private string bandLiveInfo;
+
         #endregion
 
         #region Properties
@@ -28,6 +32,39 @@ namespace WorldHourBand.ViewModels
         /// Implement the INotifyPropertyChanged interface for databinding with the main page
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string BandInfo
+        {
+            get
+            {
+                return bandInfo;
+            }
+
+            set
+            {
+                bandInfo = value;
+                OnPropertyChanged("BandInfo");
+            }
+        }
+
+
+        public string BandLiveInfo
+        {
+            get
+            {
+                return bandLiveInfo;
+            }
+
+            set
+            {
+                bandLiveInfo = value;
+                OnPropertyChanged("BandLiveInfo");
+            }
+        }
         #endregion
 
 
@@ -43,6 +80,61 @@ namespace WorldHourBand.ViewModels
         #endregion
 
         #region methods
+
+        public async Task TestGetBandInfo()
+        {
+            //Get a list of paired band
+            var pairedBands = await BandClientManager.Instance.GetBandsAsync();
+
+            var tempBand = pairedBands[0];
+
+            BandInfo = tempBand.Name + " "  + tempBand.ConnectionType.ToString();
+
+            return;
+        }
+
+
+        public async Task TestGetBandLiveInfo()
+        {
+
+            //check if we already have a connection to a band or not.
+            if (currentBandInfo == null)
+            {
+                //Get a list of paired band
+                var pairedBands = await BandClientManager.Instance.GetBandsAsync();
+
+
+                if (pairedBands.Count() < 1)
+                {
+                    //something is wrong.
+                    BandLiveInfo = "Can't find your band info. Did you pair it?";
+                    return;
+                }
+
+                //Get the band info 
+                currentBandInfo = pairedBands[0];
+            }
+
+
+            try
+            {
+                //Try to establish connection to the band
+                currentBandClient = await BandClientManager.Instance.ConnectAsync(currentBandInfo);
+
+                BandLiveInfo = "Band Firmware Version: " + (await currentBandClient.GetFirmwareVersionAsync()) + "  Hardware Version: "  + (await currentBandClient.GetHardwareVersionAsync());
+
+                return;
+            }
+
+            catch (BandException ex)
+            {
+                //something went wrong.
+                BandLiveInfo = "Can't find your band. Please keep that in range";
+            }
+
+        }
+
+
 
         /// <summary>
         /// Initialize the connection to the band. Default will be the first one in the paired Band 
@@ -88,7 +180,7 @@ namespace WorldHourBand.ViewModels
         /// <summary>
         /// Invoke the PropertyChanged event from the INotifyPropertyChanged Interface with a custom message.
         /// </summary>
-        /// <param name="message"> Message about the event</param>
+        /// <param name="message"> Name of the property that got changed</param>
         public void OnPropertyChanged(string message)
         {
             if(PropertyChanged != null)

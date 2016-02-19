@@ -18,19 +18,19 @@
     <!--The Grid that expand the whole page.-->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{StaticResource mainPageViewModel}">
         <StackPanel>
-            <Button HorizontalAlignment="Center" Padding="5" Margin="20">
+            <Button HorizontalAlignment="Center" Padding="5" Margin="20" Click="Button_Click">
                 Get Band Info
             </Button>
 
-            <TextBox x:Name="GetBandInfoResult" HorizontalAlignment="Center" Height="Auto" Width="Auto">
+            <TextBox x:Name="GetBandInfoResult" HorizontalAlignment="Center" Height="Auto" Width="Auto" Text="{Binding BandInfo}">
                 
             </TextBox>
 
-            <Button HorizontalAlignment="Center" Padding="5" Margin="20">
+            <Button HorizontalAlignment="Center" Padding="5" Margin="20" Click="Button_Click_1">
                 Test Connection Band
             </Button>
 
-            <TextBox x:Name="ConnectToBandResult" HorizontalAlignment="Center" Height="Auto" Width="Auto">
+            <TextBox x:Name="ConnectToBandResult" HorizontalAlignment="Center" Height="Auto" Width="Auto" Text="{Binding BandLiveInfo}">
 
             </TextBox>
         </StackPanel>
