@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Band;
+using System.ComponentModel;
 
 namespace WorldHourBand.ViewModels
 {
-    public class MainPageViewModel
+    public class MainPageViewModel : INotifyPropertyChanged
     {
         #region Fields
         /// <summary>
@@ -19,10 +20,14 @@ namespace WorldHourBand.ViewModels
         /// representing the band client that we are working with.
         /// </summary>
         private IBandClient currentBandClient;
+
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// Implement the INotifyPropertyChanged interface for databinding with the main page
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
 
@@ -79,6 +84,18 @@ namespace WorldHourBand.ViewModels
             }   
 
         } 
+
+        /// <summary>
+        /// Invoke the PropertyChanged event from the INotifyPropertyChanged Interface with a custom message.
+        /// </summary>
+        /// <param name="message"> Message about the event</param>
+        public void OnPropertyChanged(string message)
+        {
+            if(PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(message));
+            }
+        }
 
         #endregion
 
