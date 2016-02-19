@@ -5,9 +5,34 @@
     xmlns:local="using:WorldHourBand"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModel="using:WorldHourBand.ViewModels"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <!-- Declare the view model to the page resource.-->
+    <Page.Resources>
+        <ViewModel:MainPageViewModel x:Key="mainPageViewModel" x:Name="mainPageViewModel" />
+    </Page.Resources>
+    
+    
+    <!--The Grid that expand the whole page.-->
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{StaticResource mainPageViewModel}">
+        <StackPanel>
+            <Button HorizontalAlignment="Center" Padding="5" Margin="20">
+                Get Band Info
+            </Button>
+
+            <TextBox x:Name="GetBandInfoResult" HorizontalAlignment="Center" Height="Auto" Width="Auto">
+                
+            </TextBox>
+
+            <Button HorizontalAlignment="Center" Padding="5" Margin="20">
+                Test Connection Band
+            </Button>
+
+            <TextBox x:Name="ConnectToBandResult" HorizontalAlignment="Center" Height="Auto" Width="Auto">
+
+            </TextBox>
+        </StackPanel>
     </Grid>
 </Page>
