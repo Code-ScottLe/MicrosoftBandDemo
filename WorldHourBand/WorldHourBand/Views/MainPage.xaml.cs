@@ -48,5 +48,14 @@ namespace WorldHourBand
         {
             await TestGetBandLiveInfo();
         }
+
+        private async void SendCustomTile_Click(object sender, RoutedEventArgs e)
+        {
+            //Clear old stuffs
+
+            await ((MainPageViewModel)this.Resources["mainPageViewModel"]).TestPutTileBand();
+
+            BandMessage.Text = "";
+        }
     }
 }

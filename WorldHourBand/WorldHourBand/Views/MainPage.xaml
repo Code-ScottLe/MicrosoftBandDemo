@@ -14,7 +14,6 @@
         <ViewModel:MainPageViewModel x:Key="mainPageViewModel" x:Name="mainPageViewModel" />
     </Page.Resources>
     
-    
     <!--The Grid that expand the whole page.-->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{StaticResource mainPageViewModel}">
         <StackPanel>
@@ -30,9 +29,17 @@
                 Test Connection Band
             </Button>
 
-            <TextBox x:Name="ConnectToBandResult" HorizontalAlignment="Center" Height="Auto" Width="Auto" Text="{Binding BandLiveInfo}">
+            <TextBox x:Name="ConnectToBandResult" HorizontalAlignment="Center" Height="Auto" Width="Auto" Padding="5" Margin="20" Text="{Binding BandLiveInfo}">
 
             </TextBox>
+
+            <Button x:Name="SendCustomTile" HorizontalAlignment="Center" Height="Auto" Width="Auto" Padding="5" Margin="20" Click="SendCustomTile_Click">
+                Send Custom Tile
+            </Button>
+
+            <TextBox x:Name="BandMessage" HorizontalAlignment="Center" Height="Auto" Width="Auto" Padding="5" Margin="20" Text="{Binding Message}"/>
+            
+            
         </StackPanel>
     </Grid>
 </Page>

@@ -266,7 +266,7 @@ namespace WorldHourBand.ViewModels
             await currentBandClient.TileManager.SetPagesAsync(myTile.TileId, bandCustomPagedata);
 
             //Echo over to the message bar.
-            Message = "Done. You are the coolest kid in Wazzu now";
+            Message = "Done";
 
         }
 
