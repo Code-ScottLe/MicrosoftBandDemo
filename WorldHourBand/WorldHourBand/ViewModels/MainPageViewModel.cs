@@ -258,14 +258,134 @@ namespace WorldHourBand.ViewModels
                 Guid.NewGuid(), // The ID for the page?
                 0, // The index of the layout/page to be used. We only have 1 layout/page. (Can add up to 5)
                 new TextBlockData(myCardTextBlock.ElementId.Value, "Scotty's Card"),            //from here and now on, is the data for the controls that we have on the layout/page.
-                new BarcodeData(barcode.BarcodeType, barcode.ElementId.Value, "11352927"),
-                new TextBlockData(digitsTextBlock.ElementId.Value, "11352927"));
+                new BarcodeData(barcode.BarcodeType, barcode.ElementId.Value, "091294"),
+                new TextBlockData(digitsTextBlock.ElementId.Value, "091294"));
 
 
             //Done creating the custom data, add it over.
             await currentBandClient.TileManager.SetPagesAsync(myTile.TileId, bandCustomPagedata);
 
             //Echo over to the message bar.
+            Message = "Done";
+
+        }
+
+
+        public async Task TestPutTileBand2()
+        {
+            //Step 1: Connect to Band if need to.
+            Message = "Connecting to Band...";
+            if(currentBandClient == null)
+            {
+                //Connect To Band.
+                bool isConnected = await InitializeBandConnection();
+
+                //check if connection successful.
+                if(isConnected == false)
+                {
+                    //Something is wrong.
+                    Message = "Can't connect to Band. Try Again!";
+                    return;
+                }
+            }
+
+            Message = "Band Connected! Creating Tiles...";
+
+            //Step 2: Create the Tile's Page layout.
+            //Would look like this:
+            // +--------------------+
+            // | Note #1            |       <=== Header Textblock
+            // | Angel is the best  |       <=== Wrapperd TextBlock for the Note
+            // | girl. Ever <3      |
+            // +--------------------+
+
+            //Step 2.1: Create a TextBlock for the Header
+            Microsoft.Band.Tiles.Pages.TextBlock myHeaderTextBlock = new TextBlock();
+
+            //Fill The Required Data for the TextBlock (ElementID and Rect):
+            //ElementID is the Unique ID of the control (within the layout/page). NOTE: 0 is not a valid ID. Everything has to be positive.
+            myHeaderTextBlock.ElementId = 1;
+
+            //Rect: Remember the Rectangle dashed-line in Photoshop when creating a new textbox? That's it. Pretty much the boundary of the control.
+            //We will be wrapping this around a ScrollFlowPanel. X,Y of the PageRect will stay 0 (page 39 SDK)
+
+            //Band 1 Workable Width: 245px;
+            //Band 2 Workable Width: 258px;
+            myHeaderTextBlock.Rect = new Microsoft.Band.Tiles.Pages.PageRect(0, 0, 200, 25);
+
+            //For the Header , let follow the Band Color.? <Does it just stay this way?>
+            //myHeaderTextBlock.Color = (await currentBandClient.PersonalizationManager.GetThemeAsync()).Base; <= Not necessarily ? Will be dynamic? Line Blow. Page 40 SDK
+            myHeaderTextBlock.ColorSource = ElementColorSource.BandBase;
+
+
+            //Step 2.2: Create the WrappedTextBlock below for the note.
+            Microsoft.Band.Tiles.Pages.WrappedTextBlock myNoteWrappedTextBlock = new WrappedTextBlock();
+
+            //Fill in the required data for the wrapped text block (again, elementID and Rect)
+            myNoteWrappedTextBlock.ElementId = 2;
+            myNoteWrappedTextBlock.Rect = new PageRect(0, 0, 240, 100);             //<=== Band 2 Height: 128px ; Band 1 Height: 106px; Wrapped TextBlock should allow displaying a long text with ScrollFlowPanel
+
+            //Color should be default of WrappedTextBlock (White)
+
+
+            //Step 3: Create a Controllers' container. Or the basic layout of the page. Think of it as Grid over the entire window in WPF 
+            //we use ScrollFlowPanel
+            Microsoft.Band.Tiles.Pages.ScrollFlowPanel myPageScrollFlowPanel = new ScrollFlowPanel(myHeaderTextBlock, myNoteWrappedTextBlock);
+
+            //Set the flow of the content to be vertically
+            myPageScrollFlowPanel.Orientation = FlowPanelOrientation.Vertical;
+
+            //Set the color of the scroll bar to match the color of the theme that we are using
+            myPageScrollFlowPanel.ScrollBarColorSource = ElementColorSource.BandBase;
+
+            //Yet, Rect again. This one should be the entire page.?
+            myPageScrollFlowPanel.Rect = new PageRect(0, 0, 240, 125);
+
+
+            //Step 4: Create the actual Tile.
+            //Step 4.1: Create a Global Unique Identifier for the Tile.
+            Guid myGuid = new Guid("D781F673-6D05-4D69-BCFF-EA7E706C3418");
+
+            //Step 4.2 Create the band tile.
+            Microsoft.Band.Tiles.BandTile myTile = new BandTile(myGuid);
+
+            //Step 4.3 Setup the properties of the tile. (name, icon, and pageLayout)
+
+            //Name:
+            myTile.Name = "My Custom Note Tile";
+
+            //Small and Large Icon.
+            //Set the icon following the sample icon that we have from the SDK.
+            myTile.TileIcon = await LoadIcon("ms-appx:///Assets/SampleTileIconLarge.png");
+            myTile.SmallIcon = await LoadIcon("ms-appx:///Assets/SampleTileIconSmall.png");
+
+            //Create a page layout object from the ScrollFlowPanel that we have.
+            Microsoft.Band.Tiles.Pages.PageLayout myPageLayout = new PageLayout(myPageScrollFlowPanel);
+
+            //Add that as the first page (can add up to 5) <== Need verification.
+            myTile.PageLayouts.Add(myPageLayout);
+
+            Message = "Done Creating Tile. Syncing...";
+
+            //Step 5: Sync over to the phone.
+
+            //Step 5.0: Remove old-previous pinned tile.
+            //do this to make sure we start fresh everytime.
+            await currentBandClient.TileManager.RemoveTileAsync(myTile.TileId);
+
+            //Step 5.1: Sync it over to the phone.
+            await currentBandClient.TileManager.AddTileAsync(myTile);
+
+
+            //Step 6 (EXTRA): We add in a custom data to the page.
+
+            TextBlockData headerText = new TextBlockData(1, "Note #1");
+            WrappedTextBlockData noteText = new WrappedTextBlockData(2, "Angel is the best girl ever!");
+
+            PageData myNotePageData = new PageData(Guid.NewGuid(), 0, headerText, noteText);
+
+            await currentBandClient.TileManager.SetPagesAsync(myTile.TileId, myNotePageData);
+
             Message = "Done";
 
         }

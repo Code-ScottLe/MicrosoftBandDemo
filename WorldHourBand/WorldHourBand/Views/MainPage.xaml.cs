@@ -52,10 +52,10 @@ namespace WorldHourBand
         private async void SendCustomTile_Click(object sender, RoutedEventArgs e)
         {
             //Clear old stuffs
+            ((MainPageViewModel)this.Resources["mainPageViewModel"]).Message = "";
 
             await ((MainPageViewModel)this.Resources["mainPageViewModel"]).TestPutTileBand();
-
-            BandMessage.Text = "";
+        
         }
     }
 }
