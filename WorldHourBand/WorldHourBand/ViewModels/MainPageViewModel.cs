@@ -324,6 +324,7 @@ namespace WorldHourBand.ViewModels
             //Fill in the required data for the wrapped text block (again, elementID and Rect)
             myNoteWrappedTextBlock.ElementId = 2;
             myNoteWrappedTextBlock.Rect = new PageRect(0, 0, 240, 100);             //<=== Band 2 Height: 128px ; Band 1 Height: 106px; Wrapped TextBlock should allow displaying a long text with ScrollFlowPanel
+            //Actually, the wrapped Textblock seem to not care about the Width?
 
             //Color should be default of WrappedTextBlock (White)
 
@@ -339,7 +340,7 @@ namespace WorldHourBand.ViewModels
             myPageScrollFlowPanel.ScrollBarColorSource = ElementColorSource.BandBase;
 
             //Yet, Rect again. This one should be the entire page.?
-            myPageScrollFlowPanel.Rect = new PageRect(0, 0, 240, 125);
+            myPageScrollFlowPanel.Rect = new PageRect(0, 0, 240, 128); // Band 2 only
 
 
             //Step 4: Create the actual Tile.
@@ -380,7 +381,7 @@ namespace WorldHourBand.ViewModels
             //Step 6 (EXTRA): We add in a custom data to the page.
 
             TextBlockData headerText = new TextBlockData(1, "Note #1");
-            WrappedTextBlockData noteText = new WrappedTextBlockData(2, "Angel is the best girl ever!");
+            WrappedTextBlockData noteText = new WrappedTextBlockData(2, "Angel is the best girl ever! She is sweet, she is beautiful, she is smart. And after all, she loves me! <3");
 
             PageData myNotePageData = new PageData(Guid.NewGuid(), 0, headerText, noteText);
 
