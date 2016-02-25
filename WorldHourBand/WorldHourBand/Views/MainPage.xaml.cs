@@ -54,7 +54,7 @@ namespace WorldHourBand
             //Clear old stuffs
             ((MainPageViewModel)this.Resources["mainPageViewModel"]).Message = "";
 
-            await ((MainPageViewModel)this.Resources["mainPageViewModel"]).TestPutTileBand();
+            await ((MainPageViewModel)this.Resources["mainPageViewModel"]).TestPutTileBand2();
         
         }
     }
