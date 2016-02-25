@@ -323,7 +323,7 @@ namespace WorldHourBand.ViewModels
 
             //Fill in the required data for the wrapped text block (again, elementID and Rect)
             myNoteWrappedTextBlock.ElementId = 2;
-            myNoteWrappedTextBlock.Rect = new PageRect(0, 0, 240, 100);             //<=== Band 2 Height: 128px ; Band 1 Height: 106px; Wrapped TextBlock should allow displaying a long text with ScrollFlowPanel
+            myNoteWrappedTextBlock.Rect = new PageRect(0, 0, 250, 100);             //<=== Band 2 Height: 128px ; Band 1 Height: 106px; Wrapped TextBlock should allow displaying a long text with ScrollFlowPanel
             //Actually, the wrapped Textblock seem to not care about the Width?
 
             //Color should be default of WrappedTextBlock (White)
@@ -340,7 +340,7 @@ namespace WorldHourBand.ViewModels
             myPageScrollFlowPanel.ScrollBarColorSource = ElementColorSource.BandBase;
 
             //Yet, Rect again. This one should be the entire page.?
-            myPageScrollFlowPanel.Rect = new PageRect(0, 0, 240, 128); // Band 2 only
+            myPageScrollFlowPanel.Rect = new PageRect(0, 0, 250, 128); // Band 2 only
 
 
             //Step 4: Create the actual Tile.
@@ -363,7 +363,8 @@ namespace WorldHourBand.ViewModels
             //Create a page layout object from the ScrollFlowPanel that we have.
             Microsoft.Band.Tiles.Pages.PageLayout myPageLayout = new PageLayout(myPageScrollFlowPanel);
 
-            //Add that as the first page (can add up to 5) <== Need verification.
+            //Add that as the first page (can add up to 8)
+            myTile.PageLayouts.Add(myPageLayout);
             myTile.PageLayouts.Add(myPageLayout);
 
             Message = "Done Creating Tile. Syncing...";
@@ -380,12 +381,20 @@ namespace WorldHourBand.ViewModels
 
             //Step 6 (EXTRA): We add in a custom data to the page.
 
+            //First one.
             TextBlockData headerText = new TextBlockData(1, "Note #1");
-            WrappedTextBlockData noteText = new WrappedTextBlockData(2, "Angel is the best girl ever! She is sweet, she is beautiful, she is smart. And after all, she loves me! <3");
+            WrappedTextBlockData noteText = new WrappedTextBlockData(2, "Angel is the best girl ever! She is sweet, she is beautiful, she is smart. And after all, she loves me and she is my whole world <3");
 
             PageData myNotePageData = new PageData(Guid.NewGuid(), 0, headerText, noteText);
 
-            await currentBandClient.TileManager.SetPagesAsync(myTile.TileId, myNotePageData);
+            //2nd one
+            TextBlockData headerText2 = new TextBlockData(1, "Note #2");
+            WrappedTextBlockData noteText2 = new WrappedTextBlockData(2, "Microsoft Band 2  rocks. This tile was created by Visual Studio 2015, written in C# and Microsoft Band SDK 1.3.20217 on Feb 24th 2016 by Scotty");
+
+            PageData myNotePageData2 = new PageData(Guid.NewGuid(), 1, headerText2, noteText2);
+
+            await currentBandClient.TileManager.SetPagesAsync(myTile.TileId, myNotePageData, myNotePageData2);
+            
 
             Message = "Done";
 
